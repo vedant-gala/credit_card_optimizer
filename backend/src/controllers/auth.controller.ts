@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import { authService } from '@/services/auth.service';
-import { createError } from '@/middleware/error.middleware';
-import { AuthRequest } from '@/middleware/auth.middleware';
+import type { Request, Response } from 'express';
+import { authService } from '../services/auth.service';
+import { createError } from '../middleware/error.middleware';
+import type { AuthRequest } from '../middleware/auth.middleware';
 
 export const authController = {
   async register(req: Request, res: Response) {

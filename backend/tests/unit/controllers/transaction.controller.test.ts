@@ -1,13 +1,11 @@
-import { TransactionController } from '../../../src/controllers/transaction.controller';
+import { transactionController } from '../../../src/controllers/transaction.controller';
 import { Request, Response } from 'express';
 
 describe('TransactionController', () => {
-  let transactionController: TransactionController;
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
 
   beforeEach(() => {
-    transactionController = new TransactionController();
     mockRequest = {};
     mockResponse = {
       status: jest.fn().mockReturnThis(),

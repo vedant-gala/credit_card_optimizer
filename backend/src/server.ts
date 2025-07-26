@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import app from './app';
-import { connectDatabase } from '@/config/database';
-import { connectRedis } from '@/config/redis';
-import { logger } from '@/utils/logger';
+import { connectDatabase } from './config/database';
+import { connectRedis } from './config/redis';
+import { logger } from './utils/logger';
 
 // Load environment variables
 dotenv.config();

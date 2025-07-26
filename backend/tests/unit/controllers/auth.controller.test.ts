@@ -1,13 +1,11 @@
-import { AuthController } from '../../../src/controllers/auth.controller';
+import { authController } from '../../../src/controllers/auth.controller';
 import { Request, Response } from 'express';
 
 describe('AuthController', () => {
-  let authController: AuthController;
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
 
   beforeEach(() => {
-    authController = new AuthController();
     mockRequest = {};
     mockResponse = {
       status: jest.fn().mockReturnThis(),

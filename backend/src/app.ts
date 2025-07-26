@@ -7,9 +7,9 @@ import rateLimit from 'express-rate-limit';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-import { errorMiddleware } from '@/middleware/error.middleware';
-import { authMiddleware } from '@/middleware/auth.middleware';
-import routes from '@/routes';
+import { errorMiddleware } from './middleware/error.middleware';
+import { authMiddleware } from './middleware/auth.middleware';
+import routes from './routes';
 
 const app = express();
 
