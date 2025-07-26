@@ -7,23 +7,23 @@ import rateLimit from 'express-rate-limit';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-import { errorMiddleware } from './middleware/error.middleware';
-import { authMiddleware } from './middleware/auth.middleware';
-import routes from './routes';
+import { errorMiddleware } from '@/middleware/error.middleware';
+import { authMiddleware } from '@/middleware/auth.middleware';
+import routes from '@/routes';
 
 const app = express();
 
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
+  origin: process.env['CORS_ORIGIN']?.split(',') || ['http://localhost:3000'],
   credentials: true
 }));
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'),
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'),
+  windowMs: parseInt(process.env['RATE_LIMIT_WINDOW_MS'] || '900000'),
+  max: parseInt(process.env['RATE_LIMIT_MAX_REQUESTS'] || '100'),
   message: 'Too many requests from this IP, please try again later.'
 });
 app.use('/api/', limiter);
@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(compression());
 
 // Logging middleware
-if (process.env.NODE_ENV !== 'test') {
+if (process.env['NODE_ENV'] !== 'test') {
   app.use(morgan('combined'));
 }
 
@@ -46,12 +46,12 @@ app.get('/health', (req, res) => {
     status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    environment: process.env.NODE_ENV
+    environment: process.env['NODE_ENV']
   });
 });
 
 // Swagger documentation
-if (process.env.ENABLE_SWAGGER === 'true') {
+if (process.env['ENABLE_SWAGGER'] === 'true') {
   const swaggerOptions = {
     definition: {
       openapi: '3.0.0',
@@ -62,7 +62,7 @@ if (process.env.ENABLE_SWAGGER === 'true') {
       },
       servers: [
         {
-          url: `http://localhost:${process.env.PORT || 3001}`,
+          url: `http://localhost:${process.env['PORT'] || 3001}`,
           description: 'Development server'
         }
       ]

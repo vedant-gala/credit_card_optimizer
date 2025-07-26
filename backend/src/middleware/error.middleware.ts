@@ -1,11 +1,18 @@
+// This file contains the middleware for error handling.
+// It is used to catch and process errors consistently across an application.
+
+// Error handling middleware catches and processes errors consistently across an application
+
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '@/utils/logger';
 
+// Define the AppError interface
 export interface AppError extends Error {
   statusCode?: number;
   isOperational?: boolean;
 }
 
+// Define the error middleware
 export const errorMiddleware = (
   error: AppError,
   req: Request,
@@ -32,9 +39,11 @@ export const errorMiddleware = (
     ...(process.env.NODE_ENV !== 'production' && { stack: error.stack })
   };
 
+  // Send the error response
   res.status(statusCode).json(errorResponse);
 };
 
+// Define the createError function
 export const createError = (message: string, statusCode: number = 500): AppError => {
   const error = new Error(message) as AppError;
   error.statusCode = statusCode;

@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { createError } from '../middleware/error.middleware';
-import type { AuthRequest } from '../middleware/auth.middleware';
+import { createError } from '@/middleware/error.middleware';
+import type { AuthRequest } from '@/middleware/auth.middleware';
 
 export const recommendationController = {
   async getCardRecommendations(req: AuthRequest, res: Response) {

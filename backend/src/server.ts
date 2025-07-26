@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
-import app from './app';
-import { connectDatabase } from './config/database';
-import { connectRedis } from './config/redis';
-import { logger } from './utils/logger';
+import app from '@/app';
+import { connectDatabase } from '@/config/database';
+import { connectRedis } from '@/config/redis';
+import { logger } from '@/utils/logger';
 
 // Load environment variables
 dotenv.config();
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env['PORT'] || 3001;
 
 async function startServer() {
   try {
@@ -22,7 +22,7 @@ async function startServer() {
     // Start server
     app.listen(PORT, () => {
       logger.info(`Server is running on port ${PORT}`);
-      logger.info(`Environment: ${process.env.NODE_ENV}`);
+      logger.info(`Environment: ${process.env['NODE_ENV']}`);
       logger.info(`API Documentation: http://localhost:${PORT}/api-docs`);
     });
   } catch (error) {

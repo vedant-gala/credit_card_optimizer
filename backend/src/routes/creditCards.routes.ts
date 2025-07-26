@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { creditCardController } from '../controllers';
-import { authMiddleware } from '../middleware/auth.middleware';
+import { creditCardController } from '@/controllers';
+import { authMiddleware } from '@/middleware/auth.middleware';
 
 const router = Router();
 

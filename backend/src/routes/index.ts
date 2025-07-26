@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import authRoutes from './auth.routes';
-import transactionRoutes from './transactions.routes';
-import creditCardRoutes from './creditCards.routes';
-import rewardsRoutes from './rewards.routes';
-import webhookRoutes from './webhooks.routes';
+import authRoutes from '@/routes/auth.routes';
+import transactionRoutes from '@/routes/transactions.routes';
+import creditCardRoutes from '@/routes/creditCards.routes';
+import rewardsRoutes from '@/routes/rewards.routes';
+import webhookRoutes from '@/routes/webhooks.routes';
 
 const router = Router();
 
