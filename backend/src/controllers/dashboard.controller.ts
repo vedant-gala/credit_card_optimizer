@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 import { createError } from '@/middleware/error.middleware';
 import type { AuthRequest } from '@/middleware/auth.middleware';
 
@@ -35,7 +35,7 @@ export const dashboardController = {
   async getSpendingAnalytics(req: AuthRequest, res: Response) {
     try {
       const userId = req.user?.id;
-      const { period = 'month' } = req.query;
+      //const { period = 'month' } = req.query; TODO : This is defined but not used
       
       if (!userId) {
         throw createError('User not authenticated', 401);

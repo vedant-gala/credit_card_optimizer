@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -8,7 +8,8 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 import { errorMiddleware } from '@/middleware/error.middleware';
-import { authMiddleware } from '@/middleware/auth.middleware';
+// TODO - Add auth middleware and then uncomment the import here
+//import { authMiddleware } from '@/middleware/auth.middleware';
 import routes from '@/routes';
 
 const app = express();
@@ -41,7 +42,10 @@ if (process.env['NODE_ENV'] !== 'test') {
 }
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+// Note : We prefixed "req" with an underscore, to indicate to typescript compilers that it is declared but not used intentionally
+// If we don't use the underscore, typescript will throw an error since strict mode is enabled
+// and you can't declare a variable that is not used
+app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),

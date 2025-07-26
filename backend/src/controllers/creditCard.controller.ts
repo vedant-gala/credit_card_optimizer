@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 import { createError } from '@/middleware/error.middleware';
 import type { AuthRequest } from '@/middleware/auth.middleware';
 
@@ -90,7 +90,7 @@ export const creditCardController = {
     try {
       const userId = req.user?.id;
       const { id } = req.params;
-      const updateData = req.body;
+      //const updateData = req.body; TODO : This is defined but not used
       
       if (!userId) {
         throw createError('User not authenticated', 401);

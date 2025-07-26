@@ -1,8 +1,13 @@
+// This file contains the authentication service.
+// It is used to register, login, logout, refresh token, get profile, generate access token and generate refresh token.
+
+// Import the necessary modules
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { User } from '@/models/User';
 import { createError } from '@/middleware/error.middleware';
 
+// Define the auth service
 export const authService = {
   async register(userData: { email: string; password: string; name: string }) {
     const { email, password, name } = userData;
@@ -14,7 +19,7 @@ export const authService = {
     }
 
     // Hash password
-    const saltRounds = parseInt(process.env.BCRYPT_ROUNDS || '12');
+    const saltRounds = parseInt(process.env['BCRYPT_ROUNDS'] || '12');
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Create user
@@ -69,7 +74,7 @@ export const authService = {
     };
   },
 
-  async logout(userId: string) {
+  async logout(_userId: string) {
     // In a real application, you might want to blacklist the token
     // For now, we'll just return success
     return true;
@@ -77,7 +82,7 @@ export const authService = {
 
   async refreshToken(refreshToken: string) {
     try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || 'refresh-secret') as any;
+      const decoded = jwt.verify(refreshToken, process.env['JWT_REFRESH_SECRET'] || 'refresh-secret') as any;
       const user = await User.findById(decoded.userId);
       
       if (!user) {
@@ -111,19 +116,25 @@ export const authService = {
     };
   },
 
+  // Note : We used Type assertion to tell typescript that the object is of type SignOptions
+  // Typescript protects us from passing in the wrong type of object to the jwt.sign function
+  // But because we KNOW that the object is of type SignOptions, we can use type assertion to tell typescript that it is of type SignOptions
+  // This is a way to tell typescript that we know what we are doing and we want to bypass the type checking
+  // This is NOT a replacement for proper type checking
+  // TODO : Replace the type assertion with a proper type check instead
   generateAccessToken(userId: string): string {
     return jwt.sign(
       { userId },
-      process.env.JWT_SECRET || 'default-secret',
-      { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
+      process.env['JWT_SECRET'] || 'default-secret',
+      { expiresIn: process.env['JWT_EXPIRES_IN'] || '1h' } as SignOptions
     );
   },
 
   generateRefreshToken(userId: string): string {
     return jwt.sign(
       { userId },
-      process.env.JWT_REFRESH_SECRET || 'refresh-secret',
-      { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+      process.env['JWT_REFRESH_SECRET'] || 'refresh-secret',
+      { expiresIn: process.env['JWT_REFRESH_EXPIRES_IN'] || '7d' } as SignOptions
     );
   }
 }; 

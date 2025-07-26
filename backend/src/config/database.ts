@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import { logger } from '@/utils/logger';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env['DATABASE_URL'],
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,

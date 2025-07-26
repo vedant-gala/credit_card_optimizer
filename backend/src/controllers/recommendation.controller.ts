@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 import { createError } from '@/middleware/error.middleware';
 import type { AuthRequest } from '@/middleware/auth.middleware';
 
@@ -11,7 +11,7 @@ export const recommendationController = {
       }
 
       // TODO: Implement recommendation service
-      const recommendations = []; // await recommendationService.getCardRecommendations(userId);
+      const recommendations: any[] = []; // await recommendationService.getCardRecommendations(userId);
       
       res.json({
         success: true,

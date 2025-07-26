@@ -13,11 +13,14 @@ export interface AppError extends Error {
 }
 
 // Define the error middleware
+// Note : We prefixed "_next" with an underscore, to indicate to typescript compilers that it is declared but not used intentionally
+// If we don't use the underscore, typescript will throw an error since strict mode is enabled
+// and you can't declare a variable that is not used
 export const errorMiddleware = (
   error: AppError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   const statusCode = error.statusCode || 500;
   const message = error.message || 'Internal Server Error';
@@ -35,8 +38,8 @@ export const errorMiddleware = (
   // Don't leak error details in production
   const errorResponse = {
     success: false,
-    message: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : message,
-    ...(process.env.NODE_ENV !== 'production' && { stack: error.stack })
+    message: process.env['NODE_ENV'] === 'production' ? 'Internal Server Error' : message,
+    ...(process.env['NODE_ENV'] !== 'production' && { stack: error.stack })
   };
 
   // Send the error response

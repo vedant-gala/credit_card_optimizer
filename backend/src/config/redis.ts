@@ -2,7 +2,7 @@ import { createClient } from 'redis';
 import { logger } from '@/utils/logger';
 
 const client = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+  url: process.env['REDIS_URL'] || 'redis://localhost:6379'
 });
 
 export async function connectRedis(): Promise<void> {

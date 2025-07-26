@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 import { createError } from '@/middleware/error.middleware';
 import type { AuthRequest } from '@/middleware/auth.middleware';
 

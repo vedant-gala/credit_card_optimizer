@@ -26,7 +26,7 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
     // Verify the token
     const decoded = jwt.verify(token, process.env['JWT_SECRET'] || 'default-secret');
     req.user = decoded;
-    next();
+    return next();
   } catch (error) {
     return res.status(401).json({
       success: false,
@@ -35,7 +35,10 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
   }
 };
 
-export const optionalAuthMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+// Note : We prefixed "_res" with an underscore, to indicate to typescript compilers that it is declared but not used intentionally
+// If we don't use the underscore, typescript will throw an error since strict mode is enabled
+// and you can't declare a variable that is not used
+export const optionalAuthMiddleware = (req: AuthRequest, _res: Response, next: NextFunction) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     

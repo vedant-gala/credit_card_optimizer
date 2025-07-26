@@ -1,7 +1,11 @@
+// This file contains the logger for the application.
+// It is used to log messages to the console and to a file.
+
 import winston from 'winston';
 
+// Define the logger
 const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
+  level: process.env['LOG_LEVEL'] || 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
@@ -14,7 +18,8 @@ const logger = winston.createLogger({
   ]
 });
 
-if (process.env.NODE_ENV !== 'production') {
+// If the environment is not production, add a console transport
+if (process.env['NODE_ENV'] !== 'production') {
   logger.add(new winston.transports.Console({
     format: winston.format.combine(
       winston.format.colorize(),
