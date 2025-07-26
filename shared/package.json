@@ -1,0 +1,31 @@
+{
+  "name": "@credit-card-optimizer/shared",
+  "version": "1.0.0",
+  "description": "Shared utilities and types for Credit Card Optimizer",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "joi": "^17.11.0",
+    "date-fns": "^2.30.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.202",
+    "typescript": "^5.3.2"
+  },
+  "keywords": [
+    "shared",
+    "types",
+    "utilities",
+    "credit-card",
+    "rewards"
+  ],
+  "author": "Credit Card Optimizer Team",
+  "license": "MIT"
+} 
