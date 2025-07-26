@@ -1,0 +1,73 @@
+export const testTransactions = {
+  validTransaction: {
+    id: '1',
+    userId: '1',
+    amount: 100.50,
+    description: 'Grocery shopping',
+    category: 'FOOD',
+    merchant: 'Walmart',
+    date: new Date('2024-01-15'),
+    status: 'COMPLETED',
+    creditCardId: '1',
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15'),
+  },
+  invalidTransaction: {
+    id: '2',
+    userId: '1',
+    amount: -50, // Negative amount
+    description: '',
+    category: 'INVALID_CATEGORY',
+    merchant: '',
+    date: new Date('2024-01-15'),
+    status: 'INVALID_STATUS',
+    creditCardId: '999', // Non-existent card
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15'),
+  },
+  largeTransaction: {
+    id: '3',
+    userId: '1',
+    amount: 5000.00,
+    description: 'Electronics purchase',
+    category: 'ELECTRONICS',
+    merchant: 'Best Buy',
+    date: new Date('2024-01-20'),
+    status: 'COMPLETED',
+    creditCardId: '1',
+    createdAt: new Date('2024-01-20'),
+    updatedAt: new Date('2024-01-20'),
+  },
+  pendingTransaction: {
+    id: '4',
+    userId: '1',
+    amount: 75.25,
+    description: 'Online order',
+    category: 'SHOPPING',
+    merchant: 'Amazon',
+    date: new Date('2024-01-25'),
+    status: 'PENDING',
+    creditCardId: '1',
+    createdAt: new Date('2024-01-25'),
+    updatedAt: new Date('2024-01-25'),
+  },
+};
+
+export const transactionFilters = {
+  validFilters: {
+    startDate: '2024-01-01',
+    endDate: '2024-01-31',
+    category: 'FOOD',
+    minAmount: 50,
+    maxAmount: 200,
+    status: 'COMPLETED',
+  },
+  invalidFilters: {
+    startDate: 'invalid-date',
+    endDate: 'invalid-date',
+    category: 'INVALID_CATEGORY',
+    minAmount: -100,
+    maxAmount: -50,
+    status: 'INVALID_STATUS',
+  },
+}; 
