@@ -357,7 +357,7 @@ The project follows a **microservices architecture** with clear separation of co
 
 ## 📚 Documentation
 
-- [API Documentation](./backend/docs/API.md)
+- [API Documentation](./backend/docs/api.md)
 - [Deployment Guide](./docs/DEPLOYMENT.md)
 - [Database Schema](./docs/DATABASE_SCHEMA.md)
 - [SMS Parsing Guide](./docs/SMS_PARSING.md)
