@@ -56,7 +56,7 @@ class SMSSimulator {
 
   private readonly cardTypes = ['VISA', 'MASTERCARD', 'AMEX', 'RUPAY'];
 
-  constructor(private readonly webhookUrl: string = 'http://localhost:3001/api/webhooks/sms') {}
+  constructor(private readonly webhookUrl: string = 'http://localhost:3001/api/v1/webhooks/sms') {}
 
   generateSMS(bankName?: string): SMSData {
     const bank = bankName
@@ -275,7 +275,7 @@ program
   .command('send')
   .description('Send a single SMS')
   .option('-b, --bank <bank>', 'Specific bank name')
-  .option('-u, --url <url>', 'Webhook URL', 'http://localhost:3001/api/webhooks/sms')
+  .option('-u, --url <url>', 'Webhook URL', 'http://localhost:3001/api/v1/webhooks/sms')
   .action(async (options) => {
     const simulator = new SMSSimulator(options.url);
     const smsData = simulator.generateSMS(options.bank);
@@ -287,7 +287,7 @@ program
   .description('Send multiple SMS messages')
   .option('-c, --count <number>', 'Number of SMS to send', '5')
   .option('-d, --delay <number>', 'Delay between SMS in milliseconds', '1000')
-  .option('-u, --url <url>', 'Webhook URL', 'http://localhost:3001/api/webhooks/sms')
+  .option('-u, --url <url>', 'Webhook URL', 'http://localhost:3001/api/v1/webhooks/sms')
   .action(async (options) => {
     const simulator = new SMSSimulator(options.url);
     await simulator.sendMultipleSMS(parseInt(options.count), parseInt(options.delay));
@@ -296,7 +296,7 @@ program
 program
   .command('interactive')
   .description('Interactive mode for manual SMS testing')
-  .option('-u, --url <url>', 'Webhook URL', 'http://localhost:3001/api/webhooks/sms')
+  .option('-u, --url <url>', 'Webhook URL', 'http://localhost:3001/api/v1/webhooks/sms')
   .action(async (options) => {
     const simulator = new SMSSimulator(options.url);
     await simulator.interactiveMode();
