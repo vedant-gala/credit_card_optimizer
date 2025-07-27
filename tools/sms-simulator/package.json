@@ -7,23 +7,24 @@
     "build": "tsc",
     "dev": "ts-node src/simulator.ts",
     "start": "node dist/simulator.js",
-    "test": "jest"
+    "test": "jest",
+    "test-simulator": "ts-node src/test-simulator.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "axios": "^1.6.0",
+    "chalk": "^5.3.0",
     "commander": "^11.1.0",
     "inquirer": "^9.2.12",
-    "chalk": "^5.3.0",
-    "faker": "^6.6.6"
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
     "@types/inquirer": "^9.0.7",
-    "@types/faker": "^6.6.9",
-    "typescript": "^5.3.2",
-    "ts-node": "^10.9.1",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.10.0",
     "jest": "^29.7.0",
-    "@types/jest": "^29.5.8"
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
   },
   "keywords": [
     "sms",
@@ -34,4 +35,4 @@
   ],
   "author": "Credit Card Optimizer Team",
   "license": "MIT"
-} 
+}
