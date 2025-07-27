@@ -4,8 +4,11 @@ import { connectDatabase } from '@/config/database';
 import { connectRedis } from '@/config/redis';
 import { logger } from '@/utils/logger';
 
-// Load environment variables
+// Load root .env file
 dotenv.config();
+
+// Print everything (this will be VERY long)
+console.log('All env variables printed:', process.env);
 
 const PORT = process.env['PORT'] || 3001;
 

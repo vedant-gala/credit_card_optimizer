@@ -118,6 +118,9 @@ services:
       DEBUG: ${DEBUG:-true}
       ENABLE_SWAGGER: ${ENABLE_SWAGGER:-true}
       ENABLE_GRAPHIQL: ${ENABLE_GRAPHIQL:-true}
+
+      # This tells my app that it is running in Docker
+      DOCKER: true
     depends_on:
       postgres:
         condition: service_healthy
