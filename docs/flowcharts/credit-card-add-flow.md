@@ -4,26 +4,31 @@ This flowchart illustrates the process of adding a new credit card to the user's
 
 ```mermaid
 flowchart TD
-    A[User navigates to add card] --> B[Fill credit card form]
-    B --> C[Enter card details: number, expiry, CVV, name]
-    C --> D[Submit card information]
-    D --> E{User authenticated?}
-    E -->|No| F[Redirect to login]
-    E -->|Yes| G[Validate card data]
-    G -->|Invalid data| H[Return validation errors]
-    G -->|Valid data| I[Encrypt sensitive card data]
-    I --> J[Validate card with payment gateway]
-    J -->|Invalid card| K[Return card validation error]
-    J -->|Valid card| L[Create card record in database]
-    L --> M{Card creation successful?}
-    M -->|No| N[Return database error]
-    M -->|Yes| O[Generate card ID]
-    O --> P[Store encrypted card data]
-    P --> Q[Associate card with user]
-    Q --> R[Update user's card list]
-    R --> S[Return success response]
-    S --> T[Show card in dashboard]
-    T --> U[Enable card for transactions]
+    A[User navigates to add card] --> B{Card source?}
+    B -->|Manual entry| C[Fill credit card form]
+    B -->|Auto-detected| D[Show pre-filled form from SMS data]
+    C --> E[Enter card details: number, expiry, CVV, name]
+    D --> F[Complete missing card details]
+    E --> G[Submit card information]
+    F --> G
+    G --> H{User authenticated?}
+    H -->|No| I[Redirect to login]
+    H -->|Yes| J[Validate card data]
+    J -->|Invalid data| K[Return validation errors]
+    J -->|Valid data| L[Encrypt sensitive card data]
+    L --> M[Validate card with payment gateway]
+    M -->|Invalid card| N[Return card validation error]
+    M -->|Valid card| O[Create card record in database]
+    O --> P{Card creation successful?}
+    P -->|No| Q[Return database error]
+    P -->|Yes| R[Generate card ID]
+    R --> S[Store encrypted card data]
+    S --> T[Associate card with user]
+    T --> U[Update user's card list]
+    U --> V[Return success response]
+    V --> W[Show card in dashboard]
+    W --> X[Enable card for transactions]
+    X --> Y[Recalculate rewards for existing transactions]
     
     style A fill:#e1f5fe
     style U fill:#c8e6c9
@@ -35,6 +40,7 @@ flowchart TD
 
 ## Process Details
 
+### Manual Card Addition
 1. **Form Access**: User navigates to the credit card addition section
 2. **Data Entry**: User fills out card details (number, expiry, CVV, cardholder name)
 3. **Authentication Check**: System verifies user is logged in with valid JWT token
@@ -45,6 +51,14 @@ flowchart TD
 8. **User Association**: Card is linked to the authenticated user
 9. **Dashboard Update**: User's card list is updated in real-time
 10. **Transaction Enablement**: Card becomes available for transaction processing
+
+### Auto-Detected Card Completion
+1. **Pre-filled Form**: System presents form with data extracted from SMS
+2. **Missing Data Entry**: User completes remaining required fields
+3. **Validation Process**: Same validation as manual entry process
+4. **Card Completion**: Partial card entry is updated with complete information
+5. **Reward Recalculation**: Existing transactions are updated with complete card data
+6. **Optimization Update**: Reward optimization algorithms are re-run with new card
 
 ## Required Card Information
 

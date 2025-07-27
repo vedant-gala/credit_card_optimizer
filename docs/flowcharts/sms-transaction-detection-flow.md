@@ -16,17 +16,23 @@ flowchart TD
     J --> K[Parse transaction details]
     K --> L{Parse successful?}
     L -->|Failed| M[Log parsing error]
-    L -->|Success| N[Extract: amount, merchant, date]
-    N --> O[Send to ML service for categorization]
-    O --> P[Get category prediction]
-    P --> Q[Match with user's credit cards]
-    Q --> R[Determine optimal card for transaction]
-    R --> S[Create transaction record]
-    S --> T[Calculate potential rewards]
-    T --> U[Store in database]
-    U --> V[Send real-time notification]
-    V --> W[Update dashboard]
-    W --> X[Trigger reward optimization]
+    L -->|Success| N[Extract: amount, merchant, date, card info]
+    N --> O[Extract card details from SMS]
+    O --> P{Card exists in user's portfolio?}
+    P -->|Yes| Q[Use existing card]
+    P -->|No| R[Auto-create card entry from SMS data]
+    R --> S[Store partial card data]
+    S --> T[Flag card for user completion]
+    T --> U[Send notification to complete card details]
+    U --> Q
+    Q --> V[Send to ML service for categorization]
+    V --> W[Get category prediction]
+    W --> X[Calculate potential rewards]
+    X --> Y[Create transaction record]
+    Y --> Z[Store in database]
+    Z --> AA[Send real-time notification]
+    AA --> BB[Update dashboard]
+    BB --> CC[Trigger reward optimization]
     
     style A fill:#e1f5fe
     style X fill:#c8e6c9
@@ -39,16 +45,19 @@ flowchart TD
 
 1. **SMS Reception**: Mobile app receives SMS notification from bank
 2. **Pattern Matching**: System matches SMS against predefined bank patterns (HDFC, SBI, ICICI, Axis)
-3. **Data Extraction**: Transaction details extracted using regex patterns
+3. **Data Extraction**: Transaction details and card information extracted using regex patterns
 4. **Webhook Processing**: SMS data sent to backend via secure webhook
 5. **Queue Management**: Transaction added to Redis-based processing queue
 6. **Background Processing**: SMS processed asynchronously to avoid blocking
-7. **ML Categorization**: Transaction sent to ML service for automatic categorization
-8. **Card Optimization**: System determines best credit card for the transaction
-9. **Database Storage**: Transaction record created in PostgreSQL
-10. **Reward Calculation**: Potential rewards calculated based on card benefits
-11. **Real-time Updates**: User notified and dashboard updated immediately
-12. **Optimization Trigger**: Reward optimization algorithms triggered
+7. **Card Detection**: System checks if card exists in user's portfolio
+8. **Auto-Card Creation**: If card not found, creates partial card entry from SMS data
+9. **User Notification**: Prompts user to complete card details in frontend
+10. **ML Categorization**: Transaction sent to ML service for automatic categorization
+11. **Card Optimization**: System determines best credit card for the transaction
+12. **Database Storage**: Transaction record created in PostgreSQL
+13. **Reward Calculation**: Potential rewards calculated based on card benefits
+14. **Real-time Updates**: User notified and dashboard updated immediately
+15. **Optimization Trigger**: Reward optimization algorithms triggered
 
 ## SMS Patterns Supported
 
@@ -62,7 +71,7 @@ flowchart TD
 - **Amount**: Transaction amount in rupees
 - **Merchant**: Store or service provider name
 - **Date**: Transaction date and time
-- **Card Type**: Credit card used (if identifiable)
+- **Card Information**: Card type, last 4 digits, bank name
 - **Transaction Type**: Purchase, withdrawal, etc.
 
 ## ML Categorization

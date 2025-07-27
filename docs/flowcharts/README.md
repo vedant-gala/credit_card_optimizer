@@ -98,6 +98,22 @@ This directory contains detailed flowcharts for the key processes in the Credit 
 - Model training and deployment
 - Performance optimization and monitoring
 
+### 7. [Auto-Card Creation Flow](./auto-card-creation-flow.md)
+**Description**: Automatic credit card detection and creation from SMS transaction data.
+
+**Key Features**:
+- SMS-based card detection
+- Partial card data extraction
+- User completion workflow
+- Transaction association
+- Reward recalculation
+
+**Use Cases**:
+- SMS parsing enhancement
+- User experience improvement
+- Card portfolio automation
+- Transaction processing optimization
+
 ## How to Use These Flowcharts
 
 ### For Developers
