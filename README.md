@@ -27,8 +27,10 @@ credit_card_optimizer/
 ├── LICENSE                                      # MIT License
 ├── .gitignore                                   # Git ignore patterns
 ├── .gitattributes                               # Git attributes
-├── docker-compose.yml                           # Docker services configuration
+├── docker-compose.yml                           # Docker services configuration with environment variables
 ├── env.example                                  # Environment variables template
+├── setup-env.sh                                 # Environment setup script (Linux/Mac)
+├── setup-env.ps1                                # Environment setup script (Windows PowerShell)
 │
 ├── backend/                                     # Node.js + Express API Server
 │   ├── package.json                             # Backend dependencies and scripts
@@ -338,22 +340,77 @@ The project follows a **microservices architecture** with clear separation of co
    ```
 
 2. **Environment setup:**
+   
+   **Option A: Using setup scripts (Recommended)**
    ```bash
-   cp .env.example .env
-   # Configure your environment variables
+   # Linux/Mac
+   ./setup-env.sh
+   
+   # Windows PowerShell
+   .\setup-env.ps1
+   ```
+   
+   **Option B: Manual setup**
+   ```bash
+   cp env.example .env
+   # Edit .env file with your configuration
    ```
 
-3. **Start development servers:**
+3. **Start services with Docker Compose (Recommended):**
    ```bash
-   # Start backend
+   # Start all services (PostgreSQL, Redis, Backend, Web Dashboard, ML Services, Nginx)
+   docker-compose up -d
+   
+   # View logs
+   docker-compose logs -f
+   
+   # Stop services
+   docker-compose down
+   ```
+
+4. **Alternative: Start individual services:**
+   ```bash
+   # Start backend only
    cd backend && npm run dev
    
-   # Start web dashboard
+   # Start web dashboard only
    cd web-dashboard && npm run dev
    
-   # Start mobile app
+   # Start mobile app only
    cd mobile-app && npm start
    ```
+
+## 🔧 Environment Configuration
+
+### Environment Variables
+
+The project uses environment variables for all configuration. Key variables include:
+
+- **Database**: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
+- **Redis**: `REDIS_HOST`, `REDIS_PORT`
+- **JWT**: `JWT_SECRET`, `JWT_EXPIRES_IN`
+- **Services**: `ML_SERVICE_URL`, `PAYMENT_GATEWAY_API_KEY`
+- **Ports**: `PORT`, `WEB_DASHBOARD_PORT`, `ML_SERVICE_PORT`
+
+### Docker Compose Features
+
+- **Environment Variable Support**: All services use environment variables with sensible defaults
+- **Health Checks**: Built-in health monitoring for PostgreSQL, Redis, Backend, and ML Services
+- **Service Discovery**: Services automatically discover each other using Docker service names
+- **Volume Persistence**: Database and Redis data persist across container restarts
+- **Development Mode**: Hot-reload enabled for backend and web dashboard
+
+### Service Ports
+
+| Service | Default Port | Environment Variable |
+|---------|-------------|---------------------|
+| Backend API | 3001 | `PORT` |
+| Web Dashboard | 3000 | `WEB_DASHBOARD_PORT` |
+| ML Services | 8000 | `ML_SERVICE_PORT` |
+| PostgreSQL | 5432 | `DB_PORT` |
+| Redis | 6379 | `REDIS_PORT` |
+| Nginx HTTP | 80 | `NGINX_HTTP_PORT` |
+| Nginx HTTPS | 443 | `NGINX_HTTPS_PORT` |
 
 ## 📚 Documentation
 
@@ -362,6 +419,51 @@ The project follows a **microservices architecture** with clear separation of co
 - [Database Schema](./docs/DATABASE_SCHEMA.md)
 - [SMS Parsing Guide](./docs/SMS_PARSING.md)
 - [Architecture Overview](./docs/ARCHITECTURE.md)
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+**Database Connection Error:**
+```bash
+# Ensure PostgreSQL is running
+docker-compose up -d postgres
+
+# Check database logs
+docker-compose logs postgres
+```
+
+**Port Already in Use:**
+```bash
+# Change ports in .env file
+PORT=3002
+WEB_DASHBOARD_PORT=3001
+```
+
+**Environment Variables Not Loading:**
+```bash
+# Ensure .env file exists in project root
+ls -la .env
+
+# Restart Docker Compose
+docker-compose down && docker-compose up -d
+```
+
+**Service Health Check Failures:**
+```bash
+# Check service status
+docker-compose ps
+
+# View service logs
+docker-compose logs [service-name]
+```
+
+### Development Tips
+
+- **Hot Reload**: Backend and web dashboard support hot reloading
+- **Database Reset**: `docker-compose down -v && docker-compose up -d` to reset data
+- **Logs**: Use `docker-compose logs -f [service]` for real-time logs
+- **Shell Access**: `docker-compose exec [service] sh` to access container shell
 
 ## 🤝 Contributing
 
