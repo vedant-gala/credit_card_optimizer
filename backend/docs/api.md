@@ -4,6 +4,11 @@
 
 This document provides comprehensive documentation for the Credit Card Rewards Optimizer backend API.
 
+## 📚 Related Documentation
+
+- **[Packet Traversal Logging](./PACKET_TRAVERSAL_LOGGING.md)** - Detailed logging system for debugging and monitoring API requests
+- **[Swagger API Spec](./swagger.json)** - OpenAPI specification for the backend API
+
 ## Base URL
 
 ```

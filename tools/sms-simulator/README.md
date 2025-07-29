@@ -85,6 +85,9 @@ npm run test-traversal
 
 # Demo packet printing functionality
 npm run demo-packet
+
+# View packet traversal documentation
+cat backend/docs/PACKET_TRAVERSAL_LOGGING.md
 ```
 
 ## 📋 SMS Patterns
