@@ -19,6 +19,7 @@ This tool helps developers and testers simulate real-world SMS messages from var
 - **Batch Mode**: Send multiple SMS messages with configurable delays
 - **Customizable Content**: Modify amount, card type, merchant, and card details
 - **Webhook Integration**: Direct integration with backend webhook endpoints
+- **Packet Printing**: Detailed packet information before transmission
 - **Rich Output**: Colored console output with detailed logging
 
 ## 📦 Installation
@@ -75,6 +76,15 @@ Options:
 #### Show Patterns
 ```bash
 npm run dev patterns
+```
+
+### Test Packet Printing
+```bash
+# Test packet traversal with detailed logging
+npm run test-traversal
+
+# Demo packet printing functionality
+npm run demo-packet
 ```
 
 ## 📋 SMS Patterns
@@ -159,17 +169,45 @@ To add new bank patterns, modify the `banks` array in `src/simulator.ts`:
 
 ## 📊 Output Examples
 
-### Successful SMS Send
+### Packet Printing (New Feature!)
 ```
 📤 Sending SMS to webhook...
-URL: http://localhost:3001/api/webhooks/sms
-Data: {
-  "message": "HDFC Bank: Rs.1500.00 spent on VISA card ending 1234 at AMAZON on 15/12/2024",
-  "sender": "HDFCBK",
-  "timestamp": "2024-12-15T10:30:00.000Z"
-}
+URL: http://localhost:3001/api/v1/webhooks/sms
+
+📦 PACKET DETAILS:
+══════════════════════════════════════════════════════════════
+🔵 [abc123] 📥 OUTGOING PACKET:
+   Method: POST
+   URL: http://localhost:3001/api/v1/webhooks/sms
+   Request ID: abc123
+   Timestamp: 2023-12-15T10:30:00.000Z
+   Headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "SMS-Simulator/1.0.0",
+        "X-Request-ID": "abc123"
+      }
+   Body: {
+        "message": "HDFC Bank: Rs.1500.00 spent on VISA card ending 1234 at AMAZON on 15/12/2024",
+        "sender": "HDFCBK",
+        "timestamp": "2023-12-15T10:30:00.000Z",
+        "userId": "test-user-123"
+      }
+   Packet Size: 245 bytes
+══════════════════════════════════════════════════════════════
+
+📤 Transmitting packet...
+```
+
+### Successful SMS Send
+```
 ✅ SMS sent successfully!
 Response: 200 OK
+Response Data: {
+  "success": true,
+  "status": "received",
+  "message": "SMS received successfully",
+  "timestamp": "2023-12-15T10:30:01.000Z"
+}
 ```
 
 ### Failed SMS Send

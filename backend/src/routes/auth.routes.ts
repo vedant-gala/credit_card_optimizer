@@ -1,8 +1,17 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { authController } from '@/controllers';
 import { authMiddleware } from '@/middleware/auth.middleware';
 
 const router = Router();
+
+// Auth route logging middleware
+const authRouteLogger = (req: Request, _res: Response, next: NextFunction) => {
+  const requestId = req.headers['x-request-id'];
+  console.log(`🔐 [${requestId}] 🔄 AUTH ROUTE: Processing ${req.method} ${req.path}`);
+  next();
+};
+
+router.use(authRouteLogger);
 
 /**
  * @swagger

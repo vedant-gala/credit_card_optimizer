@@ -8,7 +8,9 @@
     "dev": "ts-node src/simulator.ts",
     "start": "node dist/simulator.js",
     "test": "jest",
-    "test-simulator": "ts-node src/test-simulator.ts"
+    "test-simulator": "ts-node src/test-simulator.ts",
+    "test-traversal": "node test-packet-traversal.js",
+    "demo-packet": "node examples/packet-demo.js"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",

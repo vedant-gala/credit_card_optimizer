@@ -1,8 +1,19 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { transactionController } from '@/controllers';
 import { authMiddleware } from '@/middleware/auth.middleware';
 
 const router = Router();
+
+// Transaction route logging middleware
+const transactionRouteLogger = (req: Request, _res: Response, next: NextFunction) => {
+  const requestId = req.headers['x-request-id'];
+  console.log(`💳 [${requestId}] 🔄 TRANSACTION ROUTE: Processing ${req.method} ${req.path}`);
+  console.log(`💳 [${requestId}] 💳 TRANSACTION ROUTE: Request params:`, req.params);
+  console.log(`💳 [${requestId}] 💳 TRANSACTION ROUTE: Request query:`, req.query);
+  next();
+};
+
+router.use(transactionRouteLogger);
 
 // All routes require authentication
 router.use(authMiddleware);

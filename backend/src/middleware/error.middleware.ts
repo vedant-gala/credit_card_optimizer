@@ -22,8 +22,17 @@ export const errorMiddleware = (
   res: Response,
   _next: NextFunction
 ) => {
+  const requestId = req.headers['x-request-id'];
   const statusCode = error.statusCode || 500;
   const message = error.message || 'Internal Server Error';
+
+  console.log(`💥 [${requestId}] 🚨 ERROR MIDDLEWARE: Error caught and being processed`);
+  console.log(`💥 [${requestId}] 🚨 ERROR MIDDLEWARE: Error details:`, {
+    message: error.message,
+    statusCode: error.statusCode,
+    isOperational: error.isOperational,
+    stack: error.stack?.split('\n').slice(0, 3).join('\n') // First 3 lines of stack
+  });
 
   // Log error
   logger.error('Error occurred:', {
@@ -42,8 +51,15 @@ export const errorMiddleware = (
     ...(process.env['NODE_ENV'] !== 'production' && { stack: error.stack })
   };
 
+  console.log(`💥 [${requestId}] 🚨 ERROR MIDDLEWARE: Sending error response:`, {
+    statusCode,
+    message: errorResponse.message
+  });
+
   // Send the error response
   res.status(statusCode).json(errorResponse);
+  
+  console.log(`💥 [${requestId}] ✅ ERROR MIDDLEWARE: Error response sent`);
 };
 
 // Define the createError function

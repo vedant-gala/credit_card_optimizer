@@ -89,19 +89,49 @@ class SMSSimulator {
 
   async sendSMS(smsData: SMSData): Promise<boolean> {
     try {
+      // Generate a unique request ID for this SMS
+      const requestId = Math.random().toString(36).substring(7);
+      
       console.log(chalk.blue('📤 Sending SMS to webhook...'));
       console.log(chalk.gray('URL:'), this.webhookUrl);
-      console.log(chalk.gray('Data:'), JSON.stringify(smsData, null, 2));
+      
+      // Print detailed packet information before sending
+      console.log(chalk.yellow('\n📦 PACKET DETAILS:'));
+      console.log(chalk.yellow('═'.repeat(50)));
+      console.log(chalk.cyan(`🔵 [${requestId}] 📥 OUTGOING PACKET:`));
+      console.log(chalk.cyan(`   Method: POST`));
+      console.log(chalk.cyan(`   URL: ${this.webhookUrl}`));
+      console.log(chalk.cyan(`   Request ID: ${requestId}`));
+      console.log(chalk.cyan(`   Timestamp: ${new Date().toISOString()}`));
+      
+      // Headers
+      const headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'SMS-Simulator/1.0.0',
+        'X-Request-ID': requestId
+      };
+      console.log(chalk.cyan(`   Headers:`), JSON.stringify(headers, null, 6));
+      
+      // Body
+      console.log(chalk.cyan(`   Body:`), JSON.stringify(smsData, null, 6));
+      
+      // Calculate packet size
+      const packetSize = JSON.stringify(smsData).length;
+      console.log(chalk.cyan(`   Packet Size: ${packetSize} bytes`));
+      console.log(chalk.yellow('═'.repeat(50)));
+      
+      console.log(chalk.gray('\n📤 Transmitting packet...'));
 
       const response = await axios.post(this.webhookUrl, smsData, {
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'SMS-Simulator/1.0.0'
+          'User-Agent': 'SMS-Simulator/1.0.0',
+          'X-Request-ID': requestId
         },
         timeout: 10000
       });
 
-      console.log(chalk.green('✅ SMS sent successfully!'));
+      console.log(chalk.green('\n✅ SMS sent successfully!'));
       console.log(chalk.gray('Response:'), response.status, response.statusText);
 
       if (response.data) {
@@ -110,7 +140,7 @@ class SMSSimulator {
 
       return true;
     } catch (error) {
-      console.error(chalk.red('❌ Failed to send SMS:'));
+      console.error(chalk.red('\n❌ Failed to send SMS:'));
       if (axios.isAxiosError(error)) {
         console.error(chalk.red('Status:'), error.response?.status);
         console.error(chalk.red('Message:'), error.response?.data || error.message);
@@ -128,7 +158,9 @@ class SMSSimulator {
     let failureCount = 0;
 
     for (let i = 0; i < count; i++) {
-      console.log(chalk.blue(`\n--- SMS ${i + 1}/${count} ---`));
+      console.log(chalk.blue(`\n${'═'.repeat(60)}`));
+      console.log(chalk.blue(`📱 SMS ${i + 1}/${count}`));
+      console.log(chalk.blue(`${'═'.repeat(60)}`));
 
       const smsData = this.generateSMS();
       const success = await this.sendSMS(smsData);
@@ -140,12 +172,14 @@ class SMSSimulator {
       }
 
       if (i < count - 1) {
-        console.log(chalk.gray(`Waiting ${delayMs}ms before next SMS...`));
+        console.log(chalk.gray(`\n⏳ Waiting ${delayMs}ms before next SMS...`));
         await new Promise(resolve => setTimeout(resolve, delayMs));
       }
     }
 
-    console.log(chalk.green(`\n✅ Completed! Success: ${successCount}, Failed: ${failureCount}`));
+    console.log(chalk.green(`\n${'═'.repeat(60)}`));
+    console.log(chalk.green(`✅ BATCH COMPLETED! Success: ${successCount}, Failed: ${failureCount}`));
+    console.log(chalk.green(`${'═'.repeat(60)}`));
   }
 
   async interactiveMode(): Promise<void> {
