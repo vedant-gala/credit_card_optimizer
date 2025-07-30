@@ -344,4 +344,18 @@ program
     simulator.showPatterns();
   });
 
+program
+  .command('send-hdfc-demo')
+  .description('Send a demo HDFC SMS in the custom format for parser testing')
+  .option('-u, --url <url>', 'Webhook URL', 'http://localhost:3001/api/v1/webhooks/sms')
+  .action(async (options) => {
+    const simulator = new SMSSimulator(options.url);
+    const smsData = {
+      message: 'Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food On 2025-07-30:19:56:11.Not You? To Block+Reissue Call 18002586161/SMS BLOCK CC 0088 to 7308080808',
+      sender: 'HDFCBK',
+      timestamp: new Date().toISOString()
+    };
+    await simulator.sendSMS(smsData);
+  });
+
 program.parse(); 
