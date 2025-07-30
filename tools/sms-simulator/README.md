@@ -52,7 +52,7 @@ npm run dev send [options]
 
 Options:
   -b, --bank <bank>    Specific bank name (HDFC Bank, SBI, ICICI Bank, Axis Bank)
-  -u, --url <url>      Webhook URL (default: http://localhost:3001/api/webhooks/sms)
+  -u, --url <url>      Webhook URL (default: http://localhost:3001/api/v1/webhooks/sms)
 ```
 
 #### Send Multiple SMS (Batch Mode)
@@ -62,7 +62,7 @@ npm run dev batch [options]
 Options:
   -c, --count <number>  Number of SMS to send (default: 5)
   -d, --delay <number>  Delay between SMS in milliseconds (default: 1000)
-  -u, --url <url>       Webhook URL (default: http://localhost:3001/api/webhooks/sms)
+  -u, --url <url>       Webhook URL (default: http://localhost:3001/api/v1/webhooks/sms)
 ```
 
 #### Interactive Mode
@@ -70,7 +70,7 @@ Options:
 npm run dev interactive [options]
 
 Options:
-  -u, --url <url>      Webhook URL (default: http://localhost:3001/api/webhooks/sms)
+  -u, --url <url>      Webhook URL (default: http://localhost:3001/api/v1/webhooks/sms)
 ```
 
 #### Show Patterns
@@ -156,7 +156,7 @@ npm run dev interactive
 ## 🔧 Configuration
 
 ### Webhook URL
-The default webhook URL is `http://localhost:3001/api/webhooks/sms`. You can change this using the `-u` or `--url` option.
+The default webhook URL is `http://localhost:3001/api/v1/webhooks/sms`. You can change this using the `-u` or `--url` option.
 
 ### Custom Bank Patterns
 To add new bank patterns, modify the `banks` array in `src/simulator.ts`:
@@ -216,7 +216,7 @@ Response Data: {
 ### Failed SMS Send
 ```
 📤 Sending SMS to webhook...
-URL: http://localhost:3001/api/webhooks/sms
+URL: http://localhost:3001/api/v1/webhooks/sms
 Data: { ... }
 ❌ Failed to send SMS:
 Status: 500
@@ -249,7 +249,7 @@ DEBUG=* npm run dev send
 ## 🔗 Integration
 
 ### Backend Webhook Endpoint
-The simulator expects the backend to have a webhook endpoint at `/api/webhooks/sms` that accepts POST requests with the following structure:
+The simulator expects the backend to have a webhook endpoint at `/api/v1/webhooks/sms` that accepts POST requests with the following structure:
 
 ```json
 {

@@ -25,6 +25,325 @@ Authorization: Bearer <your-jwt-token>
 
 ## Endpoints
 
+### SMS Processing
+
+#### POST /sms/parse
+Parse SMS message and extract transaction data.
+
+**Request Body:**
+```json
+{
+  "message": "Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food On 2025-07-30:19:56:11",
+  "sender": "HDFCBK"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "SMS parsed successfully",
+  "data": {
+    "bank": {
+      "name": "HDFC Bank",
+      "code": "HDFC",
+      "country": "IN",
+      "confidence": 0.95
+    },
+    "transaction": {
+      "amount": 799,
+      "currency": "INR",
+      "merchant": "Payu*Swiggy Food",
+      "cardLast4": "0088",
+      "cardType": "UNKNOWN",
+      "bank": "HDFC Bank",
+      "dateTime": "2025-07-30:19:56:11",
+      "transactionType": "debit"
+    },
+    "rawMessage": "Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food On 2025-07-30:19:56:11",
+    "sender": "HDFCBK",
+    "parsedAt": "2025-01-30T19:56:11Z",
+    "confidence": 0.9025,
+    "pattern": "hdfc_spent_format"
+  }
+}
+```
+
+#### POST /sms/validate
+Validate SMS message format.
+
+**Request Body:**
+```json
+{
+  "message": "Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food On 2025-07-30:19:56:11",
+  "sender": "HDFCBK"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "SMS validation completed",
+  "data": {
+    "isValid": true,
+    "errors": [],
+    "warnings": [],
+    "detectedBank": {
+      "name": "HDFC Bank",
+      "code": "HDFC",
+      "country": "IN"
+    },
+    "detectedTransaction": {
+      "amount": 799,
+      "currency": "INR",
+      "merchant": "Payu*Swiggy Food"
+    }
+  }
+}
+```
+
+#### GET /sms/banks
+Get list of supported banks.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Supported banks retrieved successfully",
+  "data": {
+    "banks": [
+      {
+        "name": "HDFC Bank",
+        "code": "HDFC",
+        "country": "IN",
+        "senderIds": ["HDFCBK", "HDFC", "HDFCBANK"],
+        "confidence": 0.95
+      }
+    ],
+    "total": 8,
+    "countries": ["IN", "US"]
+  }
+}
+```
+
+#### GET /sms/patterns
+Get list of supported SMS patterns.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Supported patterns retrieved successfully",
+  "data": {
+    "patterns": [
+      {
+        "id": "hdfc_spent_format",
+        "name": "HDFC Spent Format",
+        "bank": "HDFC",
+        "country": "IN",
+        "example": "Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food On 2025-07-30:19:56:11",
+        "confidence": 0.95
+      }
+    ],
+    "total": 5,
+    "banks": ["HDFC", "SBI", "ICICI", "CHASE"],
+    "countries": ["IN", "US"]
+  }
+}
+```
+
+#### POST /sms/test-pattern
+Test a specific SMS pattern against a message.
+
+**Request Body:**
+```json
+{
+  "message": "Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food On 2025-07-30:19:56:11",
+  "patternId": "hdfc_spent_format"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Pattern test completed",
+  "data": {
+    "patternId": "hdfc_spent_format",
+    "patternName": "HDFC Spent Format",
+    "isValid": true,
+    "match": ["Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food On 2025-07-30:19:56:11", "799", "HDFC Bank", "0088", "Payu*Swiggy Food", "2025-07-30:19:56:11"],
+    "example": "Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food On 2025-07-30:19:56:11",
+    "confidence": 0.95
+  }
+}
+```
+
+### Payment Processing
+
+#### POST /payments/process
+Process a new payment.
+
+**Request Body:**
+```json
+{
+  "transactionId": "txn_123456",
+  "amount": 799,
+  "currency": "INR",
+  "gateway": "razorpay",
+  "metadata": {
+    "orderId": "order_789",
+    "customerId": "cust_456"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Payment processing initiated",
+  "data": {
+    "success": true,
+    "transactionId": "txn_123456",
+    "status": "pending",
+    "processedAt": "2025-01-30T19:56:11Z"
+  }
+}
+```
+
+#### POST /payments/webhook
+Process payment webhook from external services.
+
+**Request Body:**
+```json
+{
+  "transactionId": "txn_123456",
+  "status": "completed",
+  "amount": 799,
+  "currency": "INR",
+  "timestamp": "2025-01-30T19:56:11Z",
+  "gateway": "razorpay",
+  "referenceId": "ref_789"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Webhook processed successfully",
+  "data": {
+    "success": true,
+    "transactionId": "txn_123456",
+    "status": "completed",
+    "processedAt": "2025-01-30T19:56:11Z",
+    "rewardCalculations": {
+      "cashback": 40,
+      "points": 80,
+      "category": "FOOD_DELIVERY",
+      "multiplier": 2.0
+    },
+    "notifications": [
+      {
+        "type": "transaction_complete",
+        "channel": "push",
+        "sent": true
+      }
+    ]
+  }
+}
+```
+
+#### PUT /payments/transactions/{transactionId}/status
+Update transaction status.
+
+**Request Body:**
+```json
+{
+  "status": "completed",
+  "notes": "Payment processed successfully"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Transaction status updated successfully",
+  "data": {
+    "transactionId": "txn_123456",
+    "status": "completed",
+    "updatedAt": "2025-01-30T19:56:11Z",
+    "updatedBy": "api_request",
+    "notes": "Payment processed successfully"
+  }
+}
+```
+
+#### GET /payments/transactions/{transactionId}/status
+Get transaction status and history.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Transaction status retrieved successfully",
+  "data": {
+    "transactionId": "txn_123456",
+    "status": "completed",
+    "lastUpdated": "2025-01-30T19:56:11Z",
+    "history": [
+      {
+        "status": "pending",
+        "timestamp": "2025-01-30T18:56:11Z",
+        "updatedBy": "payment_webhook"
+      },
+      {
+        "status": "completed",
+        "timestamp": "2025-01-30T19:56:11Z",
+        "updatedBy": "payment_webhook"
+      }
+    ]
+  }
+}
+```
+
+#### GET /payments/stats
+Get payment processing statistics.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Processing statistics retrieved successfully",
+  "data": {
+    "totalProcessed": 150,
+    "successRate": 0.98,
+    "averageProcessingTime": 250,
+    "lastUpdated": "2025-01-30T19:56:11Z"
+  }
+}
+```
+
+#### POST /payments/transactions/{transactionId}/rewards
+Trigger reward calculations for a transaction.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Reward calculations triggered successfully",
+  "data": {
+    "cashback": 40,
+    "points": 80,
+    "category": "FOOD_DELIVERY",
+    "multiplier": 2.0
+  }
+}
+```
+
 ### Authentication
 
 #### POST /auth/register
@@ -359,29 +678,76 @@ API requests are rate limited to:
 - 100 requests per minute for authenticated users
 - 10 requests per minute for unauthenticated users
 
-## Webhooks
+## Webhooks (External Services)
+
+These endpoints are designed for external service integration (mobile apps, banks, payment gateways). They use the service layer for business logic processing.
 
 ### POST /webhooks/sms
-Receive SMS notifications for transaction processing.
+Receive SMS notifications for transaction processing. Uses the SMS Parser Service for processing.
 
 **Request Body:**
 ```json
 {
-  "message": "Transaction: $100.50 at Walmart",
-  "sender": "+1234567890",
-  "timestamp": "2024-01-15T10:30:00Z"
+  "message": "Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food On 2025-07-30:19:56:11",
+  "sender": "HDFCBK",
+  "timestamp": "2025-01-30T19:56:11Z",
+  "userId": "user_123"
 }
 ```
 
+**Response:**
+```json
+{
+  "success": true,
+  "status": "received",
+  "message": "SMS received successfully",
+  "timestamp": "2025-01-30T19:56:11Z"
+}
+```
+
+**Processing Flow:**
+1. Validates webhook data
+2. Uses SMS Parser Service to extract transaction details
+3. Creates transaction record (if valid)
+4. Triggers reward calculations
+5. Sends real-time notifications
+
 ### POST /webhooks/payment
-Receive payment gateway notifications.
+Receive payment gateway notifications. Uses the Payment Processor Service for processing.
 
 **Request Body:**
 ```json
 {
-  "transactionId": "txn_123",
+  "transactionId": "txn_123456",
   "status": "completed",
-  "amount": 100.50,
-  "timestamp": "2024-01-15T10:30:00Z"
+  "amount": 799,
+  "currency": "INR",
+  "timestamp": "2025-01-30T19:56:11Z",
+  "gateway": "razorpay",
+  "referenceId": "ref_789",
+  "failureReason": null
 }
-``` 
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "status": "received",
+  "message": "Payment webhook received successfully"
+}
+```
+
+**Processing Flow:**
+1. Validates webhook data
+2. Uses Payment Processor Service to update transaction status
+3. Triggers reward calculations (if payment completed)
+4. Sends notifications based on payment status
+5. Handles refunds and error cases
+
+### Webhook Security
+
+- **Signature Validation**: External webhooks should include signature headers for verification
+- **Rate Limiting**: Webhook endpoints have rate limiting to prevent abuse
+- **Input Validation**: All webhook data is validated before processing
+- **Error Handling**: Failed webhooks are logged with full context for debugging 

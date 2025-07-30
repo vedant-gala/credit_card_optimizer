@@ -36,19 +36,22 @@ The Credit Card Optimizer is built as a microservices-based architecture with th
 - **Documentation:** Swagger/OpenAPI
 
 **Key Features:**
-- RESTful API with versioning
+- RESTful API with versioning (`/api/v1/*`)
 - Comprehensive middleware stack (auth, validation, rate limiting)
 - Background job processing with Bull queues
-- SMS parsing and transaction categorization
-- Real-time notifications
+- **SMS Parser Service** with multi-bank support
+- **Payment Processor Service** with webhook handling
+- Real-time notifications and reward calculations
 - File upload handling
-- Comprehensive logging and monitoring
+- Comprehensive logging and packet traversal tracking
 
 **Architecture Patterns:**
-- MVC pattern with service layer
-- Repository pattern for data access
-- Dependency injection for testability
-- Event-driven architecture for async processing
+- **Hybrid Webhook Architecture**: External webhooks + internal APIs
+- **Service Layer Pattern**: Business logic in dedicated services
+- **MVC pattern** with service layer separation
+- **Repository pattern** for data access
+- **Dependency injection** for testability
+- **Event-driven architecture** for async processing
 
 ### 2. Mobile App (React Native)
 
@@ -98,6 +101,37 @@ The Credit Card Optimizer is built as a microservices-based architecture with th
 - **NLP:** spaCy, NLTK
 - **Data Processing:** pandas, numpy
 - **Async Processing:** asyncio, aiohttp
+
+### 5. Service Layer Architecture
+
+**Core Services:**
+
+#### **SMS Parser Service**
+- **Purpose**: Multi-bank SMS parsing and transaction extraction
+- **Supported Banks**: HDFC, SBI, ICICI, Axis, Kotak (India) + Chase, BOA, Wells Fargo (US)
+- **Features**: Regex pattern matching, bank detection, confidence scoring
+- **Integration**: Used by SMS webhooks and internal SMS APIs
+
+#### **Payment Processor Service**
+- **Purpose**: Payment webhook processing and transaction status management
+- **Features**: Status transitions, reward calculations, notification handling
+- **Integration**: Used by payment webhooks and internal payment APIs
+
+#### **Service Communication Pattern**
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Controllers   │    │     Services    │    │   External      │
+│                 │    │                 │    │   Integrations  │
+│ smsController   │───▶│ SMSParserService│───▶│ SMS Gateways    │
+│ paymentController│───▶│ PaymentProcessor│───▶│ Payment Gateways│
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+#### **Hybrid Webhook Architecture**
+- **External Webhooks**: `/api/v1/webhooks/*` for external service integration
+- **Internal APIs**: `/api/v1/sms/*` and `/api/v1/payments/*` for internal processing
+- **Service Reuse**: Same services used by both webhooks and internal APIs
+- **Testing**: Internal APIs enable comprehensive testing without external dependencies
 
 **Key Features:**
 - Transaction categorization using NLP

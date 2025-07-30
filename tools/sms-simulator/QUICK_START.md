@@ -62,7 +62,7 @@ npm run dev interactive
 
 ### Change Webhook URL
 ```bash
-npm run dev send -u "http://your-backend:3001/api/webhooks/sms"
+npm run dev send -u "http://your-backend:3001/api/v1/webhooks/sms"
 ```
 
 ### Custom Bank Patterns
@@ -81,7 +81,7 @@ Edit `src/simulator.ts` to add new banks:
 ### Successful SMS Send
 ```
 📤 Sending SMS to webhook...
-URL: http://localhost:3001/api/webhooks/sms
+URL: http://localhost:3001/api/v1/webhooks/sms
 Data: {
   "message": "HDFC Bank: Rs.1500.00 spent on VISA card ending 1234 at AMAZON on 15/12/2024",
   "sender": "HDFCBK",

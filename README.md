@@ -4,11 +4,14 @@ A comprehensive platform for optimizing credit card rewards through SMS transact
 
 ## 🚀 Features
 
-- **SMS Transaction Parsing**: Automatically extract transaction data from SMS notifications
-- **Smart Categorization**: AI-powered transaction categorization
-- **Rewards Optimization**: Maximize rewards across multiple credit cards
+- **SMS Transaction Parsing**: Automatically extract transaction data from SMS notifications with multi-bank support
+- **Smart Categorization**: AI-powered transaction categorization and merchant detection
+- **Rewards Optimization**: Maximize rewards across multiple credit cards with intelligent recommendations
 - **Real-time Dashboard**: Web and mobile interfaces for transaction monitoring
-- **Personalized Recommendations**: ML-driven card recommendations
+- **Personalized Recommendations**: ML-driven card recommendations and spending insights
+- **Payment Processing**: Comprehensive payment webhook handling and status management
+- **Auto-Card Creation**: Automatically create card entries from SMS data when not explicitly added
+- **Multi-Currency Support**: Handle INR, USD, and other currencies with proper formatting
 
 ## 🏗️ Architecture
 
@@ -45,6 +48,8 @@ credit_card_optimizer/
 │   │   │   └── constants.ts                     # Application constants
 │   │   ├── controllers/
 │   │   │   ├── auth.controller.ts               # Authentication endpoints
+│   │   │   ├── sms.controller.ts                # SMS parsing and validation
+│   │   │   ├── payment.controller.ts            # Payment processing and status
 │   │   │   ├── transaction.controller.ts        # Transaction management
 │   │   │   ├── creditCard.controller.ts         # Credit card management
 │   │   │   ├── rewards.controller.ts            # Rewards calculation
@@ -65,14 +70,17 @@ credit_card_optimizer/
 │   │   ├── routes/
 │   │   │   ├── index.ts                         # Route aggregator
 │   │   │   ├── auth.routes.ts                   # Authentication routes
+│   │   │   ├── sms.routes.ts                    # SMS parsing and validation routes
+│   │   │   ├── payments.routes.ts               # Payment processing routes
 │   │   │   ├── transactions.routes.ts           # Transaction routes
 │   │   │   ├── creditCards.routes.ts            # Credit card routes
 │   │   │   ├── rewards.routes.ts                # Rewards routes
-│   │   │   └── webhooks.routes.ts               # Webhook endpoints
+│   │   │   └── webhooks.routes.ts               # Webhook endpoints (external services)
 │   │   ├── services/
 │   │   │   ├── auth.service.ts                  # Authentication logic
+│   │   │   ├── sms-parser.service.ts            # SMS parsing with multi-bank support
+│   │   │   ├── payment-processor.service.ts     # Payment webhook processing
 │   │   │   ├── transaction.service.ts           # Transaction processing
-│   │   │   ├── sms-parser.service.ts            # SMS parsing logic
 │   │   │   ├── rewards.service.ts               # Rewards calculation
 │   │   │   ├── recommendation.service.ts        # ML recommendations
 │   │   │   ├── notification.service.ts          # Push notifications
@@ -283,17 +291,31 @@ credit_card_optimizer/
 │       └── seed.sh                              # Database seeding script
 │
 ├── docs/                                        # Project Documentation
+│   ├── ARCHITECTURE.md                          # System architecture overview
 │   ├── API.md                                   # API documentation
 │   ├── DEPLOYMENT.md                            # Deployment guide
 │   ├── DATABASE_SCHEMA.md                       # Database schema documentation
 │   ├── SMS_PARSING.md                           # SMS parsing guide
-│   └── ARCHITECTURE.md                          # System architecture overview
+│   ├── PAYMENT_PROCESSING.md                    # Payment processing guide
+│   └── flowcharts/                              # System flowcharts
+│       ├── README.md                            # Flowcharts overview
+│       ├── user-signup-flow.md                  # User registration process
+│       ├── user-authentication-flow.md          # Authentication lifecycle
+│       ├── credit-card-add-flow.md              # Credit card management
+│       ├── sms-transaction-detection-flow.md    # SMS processing pipeline
+│       ├── auto-card-creation-flow.md           # Auto-card creation process
+│       ├── reward-calculation-flow.md           # Rewards optimization
+│       └── ml-recommendation-engine-flow.md     # ML recommendation system
 │
 └── tools/                                       # Development Tools
-    ├── sms-simulator/                           # SMS simulation tool
+    ├── sms-simulator/                           # SMS simulation and testing tool
     │   ├── package.json                         # Simulator dependencies
+    │   ├── README.md                            # SMS simulator documentation
+    │   ├── QUICK_START.md                       # Quick start guide
     │   └── src/
-    │       └── simulator.ts                     # SMS simulation logic
+    │       ├── simulator.ts                     # SMS simulation logic
+    │       ├── test-simulator.ts                # Testing utilities
+    │       └── examples/                        # Example usage
     └── data-migration/                          # Data migration tools
         └── scripts/                             # Migration scripts
 ```
@@ -313,14 +335,14 @@ The project follows a **microservices architecture** with clear separation of co
 
 | Component | Technology | Purpose |
 |-----------|------------|---------|
-| **Backend** | Node.js + Express + TypeScript | RESTful API with authentication |
-| **Mobile** | React Native + TypeScript | Cross-platform mobile app |
+| **Backend** | Node.js + Express + TypeScript | RESTful API with service layer architecture |
+| **Mobile** | React Native + TypeScript | Cross-platform mobile app with SMS reading |
 | **Web** | Next.js + Tailwind CSS | Responsive web dashboard |
-| **ML** | Python + FastAPI + scikit-learn | AI/ML processing |
-| **Database** | PostgreSQL | Primary data storage |
-| **Cache** | Redis | Session storage & job queues |
-| **Container** | Docker + Docker Compose | Development & deployment |
-| **Proxy** | Nginx | Reverse proxy & load balancing |
+| **ML** | Python + FastAPI + scikit-learn | AI/ML processing and recommendations |
+| **Database** | PostgreSQL | Primary data storage with transaction support |
+| **Cache** | Redis | Session storage, job queues, and caching |
+| **Container** | Docker + Docker Compose | Development & deployment with health checks |
+| **Proxy** | Nginx | Reverse proxy, load balancing, and SSL termination |
 
 ## 🛠️ Quick Start
 
@@ -414,11 +436,60 @@ The project uses environment variables for all configuration. Key variables incl
 
 ## 📚 Documentation
 
-- [API Documentation](./backend/docs/api.md)
-- [Deployment Guide](./docs/DEPLOYMENT.md)
-- [Database Schema](./docs/DATABASE_SCHEMA.md)
-- [SMS Parsing Guide](./docs/SMS_PARSING.md)
-- [Architecture Overview](./docs/ARCHITECTURE.md)
+### **Core Documentation**
+- [Architecture Overview](./docs/ARCHITECTURE.md) - System architecture and design patterns
+- [API Documentation](./backend/docs/api.md) - Complete API reference
+- [Deployment Guide](./docs/DEPLOYMENT.md) - Production deployment instructions
+- [Database Schema](./docs/DATABASE_SCHEMA.md) - Database design and relationships
+
+### **Feature Documentation**
+- [SMS Parsing Guide](./docs/SMS_PARSING.md) - SMS processing and parsing capabilities
+- [Payment Processing Guide](./docs/PAYMENT_PROCESSING.md) - Payment webhook handling
+- [Flowcharts](./docs/flowcharts/README.md) - Visual system flows and processes
+
+### **Development Tools**
+- [SMS Simulator](./tools/sms-simulator/README.md) - SMS testing and simulation tool
+- [Backend Docs](./backend/docs/README.md) - Backend-specific documentation
+- [Packet Traversal Logging](./backend/docs/PACKET_TRAVERSAL_LOGGING.md) - Debugging and monitoring
+
+## 🆕 New Features & Services
+
+### **SMS Parser Service**
+- **Multi-Bank Support**: HDFC, SBI, ICICI, Axis, Kotak (India) and Chase, BOA, Wells Fargo (US)
+- **Pattern Recognition**: Regex-based SMS parsing with confidence scoring
+- **Auto-Card Creation**: Automatically create card entries from SMS data
+- **Transaction Extraction**: Extract amount, merchant, card details, and timestamps
+- **Validation**: Comprehensive SMS format validation and error reporting
+
+### **Payment Processor Service**
+- **Webhook Handling**: Process payment webhooks from external gateways
+- **Status Management**: Track transaction status transitions (pending → completed → refunded)
+- **Reward Integration**: Trigger reward calculations on payment completion
+- **Notification System**: Send real-time notifications for payment events
+- **Error Handling**: Comprehensive error handling and retry mechanisms
+
+### **Hybrid Architecture**
+- **External Webhooks**: `/api/v1/webhooks/*` for external service integration
+- **Internal APIs**: `/api/v1/sms/*` and `/api/v1/payments/*` for internal processing
+- **Service Layer**: Business logic separated into reusable services
+- **Testing Tools**: SMS simulator for comprehensive testing
+
+### **Testing & Development**
+```bash
+# Test SMS parsing
+curl -X POST http://localhost:3001/api/v1/sms/parse \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Spent Rs.799 On HDFC Bank Card 0088 At Payu*Swiggy Food", "sender": "HDFCBK"}'
+
+# Test payment processing
+curl -X POST http://localhost:3001/api/v1/payments/process \
+  -H "Content-Type: application/json" \
+  -d '{"transactionId": "txn_123", "amount": 799, "currency": "INR"}'
+
+# Use SMS simulator
+cd tools/sms-simulator
+npm run send-hdfc-demo
+```
 
 ## 🔍 Troubleshooting
 
