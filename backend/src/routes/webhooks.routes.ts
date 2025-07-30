@@ -1,9 +1,13 @@
 import { Router, Request, Response } from 'express';
+import { SMSParserService } from '@/services/sms-parser.service';
+import { PaymentProcessorService } from '@/services/payment-processor.service';
 
 const router = Router();
+const smsParserService = new SMSParserService();
+const paymentProcessorService = new PaymentProcessorService();
 
 // Webhook endpoints for external services
-router.post('/sms', (req: Request, res: Response) => {
+router.post('/sms', async (req: Request, res: Response) => {
   const requestId = req.headers['x-request-id'];
   
   console.log(`📱 [${requestId}] 📨 SMS WEBHOOK: Received SMS webhook request`);
@@ -31,14 +35,35 @@ router.post('/sms', (req: Request, res: Response) => {
     console.log(`📱 [${requestId}] ✅ SMS WEBHOOK: Validation passed`);
     console.log(`📱 [${requestId}] 🔄 SMS WEBHOOK: Processing SMS message...`);
     
-    // TODO: Add SMS processing logic here
-    // - Parse SMS content
-    // - Extract transaction details
-    // - Check for card information
-    // - Create transaction record
-    // - Send to ML service for categorization
+    // Use SMS Parser Service
+    console.log(`📱 [${requestId}] 🔍 SMS WEBHOOK: Using SMS Parser Service...`);
     
-    console.log(`📱 [${requestId}] ✅ SMS WEBHOOK: SMS processing completed`);
+    try {
+      const parsedData = await smsParserService.parseSMS(message, sender);
+      
+      console.log(`📱 [${requestId}] ✅ SMS WEBHOOK: SMS parsed successfully by service`);
+      console.log(`📱 [${requestId}] 📊 SMS WEBHOOK: Parsed data:`, {
+        bank: parsedData.bank.name,
+        amount: parsedData.transaction.amount,
+        merchant: parsedData.transaction.merchant,
+        cardLast4: parsedData.transaction.cardLast4,
+        confidence: parsedData.confidence,
+        pattern: parsedData.pattern
+      });
+      
+      // TODO: Store transaction in database
+      // TODO: Trigger reward calculations
+      // TODO: Send real-time notifications
+      
+      console.log(`📱 [${requestId}] ✅ SMS WEBHOOK: SMS processing completed successfully`);
+      
+    } catch (parseError: any) {
+      console.log(`📱 [${requestId}] ❌ SMS WEBHOOK: SMS parsing failed:`, parseError.message);
+      return res.status(400).json({ 
+        success: false, 
+        message: `SMS parsing failed: ${parseError.message}` 
+      });
+    }
     
     return res.status(200).json({ 
       success: true,
@@ -57,7 +82,7 @@ router.post('/sms', (req: Request, res: Response) => {
 });
 
 // Payment webhook endpoint
-router.post('/payment', (req: Request, res: Response) => {
+router.post('/payment', async (req: Request, res: Response) => {
   const requestId = req.headers['x-request-id'];
   
   console.log(`💳 [${requestId}] 💰 PAYMENT WEBHOOK: Received payment webhook request`);
@@ -85,12 +110,40 @@ router.post('/payment', (req: Request, res: Response) => {
     console.log(`💳 [${requestId}] ✅ PAYMENT WEBHOOK: Validation passed`);
     console.log(`💳 [${requestId}] 🔄 PAYMENT WEBHOOK: Processing payment update...`);
     
-    // TODO: Add payment processing logic here
-    // - Update transaction status
-    // - Trigger reward calculations
-    // - Send notifications
+    // Use Payment Processor Service
+    console.log(`💳 [${requestId}] 💰 PAYMENT WEBHOOK: Using Payment Processor Service...`);
     
-    console.log(`💳 [${requestId}] ✅ PAYMENT WEBHOOK: Payment processing completed`);
+    try {
+      const webhookData = {
+        transactionId,
+        status,
+        amount,
+        timestamp,
+        gateway: req.body.gateway,
+        referenceId: req.body.referenceId,
+        failureReason: req.body.failureReason,
+        metadata: req.body.metadata
+      };
+      
+      const result = await paymentProcessorService.processPaymentWebhook(webhookData);
+      
+      console.log(`💳 [${requestId}] ✅ PAYMENT WEBHOOK: Payment processed successfully by service`);
+      console.log(`💳 [${requestId}] 📊 PAYMENT WEBHOOK: Processing result:`, {
+        success: result.success,
+        status: result.status,
+        rewardCalculations: result.rewardCalculations ? 'triggered' : 'none',
+        notifications: result.notifications?.length || 0
+      });
+      
+      console.log(`💳 [${requestId}] ✅ PAYMENT WEBHOOK: Payment processing completed successfully`);
+      
+    } catch (processError: any) {
+      console.log(`💳 [${requestId}] ❌ PAYMENT WEBHOOK: Payment processing failed:`, processError.message);
+      return res.status(400).json({ 
+        success: false, 
+        message: `Payment processing failed: ${processError.message}` 
+      });
+    }
     
     return res.status(200).json({ 
       success: true,

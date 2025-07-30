@@ -30,7 +30,7 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
     }
 
     console.log(`🔐 [${requestId}] 🔄 AUTH MIDDLEWARE: Verifying JWT token...`);
-    
+
     // Verify the token
     const decoded = jwt.verify(token, process.env['JWT_SECRET'] || 'default-secret');
     req.user = decoded;

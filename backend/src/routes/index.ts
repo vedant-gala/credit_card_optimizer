@@ -4,6 +4,8 @@ import transactionRoutes from '@/routes/transactions.routes';
 import creditCardRoutes from '@/routes/creditCards.routes';
 import rewardsRoutes from '@/routes/rewards.routes';
 import webhookRoutes from '@/routes/webhooks.routes';
+import smsRoutes from '@/routes/sms.routes';
+import paymentRoutes from '@/routes/payments.routes';
 
 const router = Router();
 
@@ -50,5 +52,15 @@ router.use('/webhooks', (req, _res, next) => {
   console.log(`🔗 [${req.headers['x-request-id']}] 🔄 WEBHOOK ROUTES: Routing to webhook handlers`);
   next();
 }, webhookRoutes);
+
+router.use('/sms', (req, _res, next) => {
+  console.log(`📱 [${req.headers['x-request-id']}] 🔄 SMS ROUTES: Routing to SMS handlers`);
+  next();
+}, smsRoutes);
+
+router.use('/payments', (req, _res, next) => {
+  console.log(`💰 [${req.headers['x-request-id']}] 🔄 PAYMENT ROUTES: Routing to payment handlers`);
+  next();
+}, paymentRoutes);
 
 export default router; 
