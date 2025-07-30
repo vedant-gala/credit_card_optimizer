@@ -6,6 +6,7 @@ import rewardsRoutes from '@/routes/rewards.routes';
 import webhookRoutes from '@/routes/webhooks.routes';
 import smsRoutes from '@/routes/sms.routes';
 import paymentRoutes from '@/routes/payments.routes';
+import hybridSMSRoutes from '@/routes/hybrid-sms.routes';
 
 const router = Router();
 
@@ -62,5 +63,10 @@ router.use('/payments', (req, _res, next) => {
   console.log(`💰 [${req.headers['x-request-id']}] 🔄 PAYMENT ROUTES: Routing to payment handlers`);
   next();
 }, paymentRoutes);
+
+router.use('/hybrid-sms', (req, _res, next) => {
+  console.log(`📱 [${req.headers['x-request-id']}] 🔄 HYBRID SMS ROUTES: Routing to hybrid SMS handlers`);
+  next();
+}, hybridSMSRoutes);
 
 export default router; 

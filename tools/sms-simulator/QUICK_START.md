@@ -31,19 +31,41 @@ npm run dev interactive
 
 ## 📋 Available Commands
 
+### Traditional Webhook Commands
 | Command | Description | Example |
 |---------|-------------|---------|
 | `patterns` | Show SMS patterns | `npm run dev patterns` |
 | `send` | Send single SMS | `npm run dev send -b "HDFC Bank"` |
 | `batch` | Send multiple SMS | `npm run dev batch -c 5 -d 2000` |
 | `interactive` | Interactive mode | `npm run dev interactive` |
+| `send-hdfc-demo` | Send demo HDFC SMS | `npm run dev send-hdfc-demo` |
+
+### 🧠 Hybrid LLM Parser Commands
+| Command | Description | Example |
+|---------|-------------|---------|
+| `hybrid-send` | Send single SMS to LLM parser | `npm run dev hybrid-send -b "HDFC Bank"` |
+| `hybrid-batch` | Send multiple SMS to LLM parser | `npm run dev hybrid-batch -c 5 -d 3000` |
+| `hybrid-hdfc-demo` | Send demo HDFC SMS to LLM parser | `npm run dev hybrid-hdfc-demo` |
+| `compare` | Compare webhook vs LLM parser | `npm run dev compare -b "HDFC Bank"` |
 
 ## 🧪 Testing Scenarios
 
-### Test Auto-Card Creation
+### Test Traditional Parsing
 ```bash
 # Send SMS with new card (should trigger auto-card creation)
 npm run dev send -b "HDFC Bank"
+```
+
+### Test AI-Powered Parsing
+```bash
+# Send SMS to hybrid LLM parser for advanced parsing
+npm run dev hybrid-send -b "HDFC Bank"
+```
+
+### Compare Both Parsers
+```bash
+# Test the same SMS with both parsers and compare results
+npm run dev compare -b "HDFC Bank"
 ```
 
 ### Test Existing Card

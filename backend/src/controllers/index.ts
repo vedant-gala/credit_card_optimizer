@@ -5,4 +5,5 @@ export { rewardsController } from './rewards.controller';
 export { dashboardController } from './dashboard.controller';
 export { recommendationController } from './recommendation.controller';
 export { smsController } from './sms.controller';
-export { paymentController } from './payment.controller'; 
+export { paymentController } from './payment.controller';
+export { hybridSMSController } from './hybrid-sms.controller'; 

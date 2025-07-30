@@ -182,11 +182,20 @@ export class SMSParserService {
 
   async parseSMS(message: string, sender: string): Promise<ParsedSMSData> {
     try {
+      console.log(`💰 SMS PARSER: Parsing SMS...`);
+      console.log(`💰 SMS PARSER: Message: ${message}`);
+      console.log(`💰 SMS PARSER: Sender: ${sender}`);
+      console.log(`💰 SMS PARSER: Message length: ${message.length}`);
+      console.log(`💰 SMS PARSER: Sender length: ${sender.length}`);
+
       // Detect bank
       const bank = this.detectBank(message, sender);
       if (!bank) {
+        console.log(`💰 SMS PARSER: Bank not detected from SMS`);
         throw createError('Bank not detected from SMS', 400);
       }
+
+      console.log(`💰 SMS PARSER: Bank detected: ${bank.name}`);
 
       // Extract transaction data
       const transaction = this.extractTransaction(message, bank);
@@ -316,6 +325,10 @@ export class SMSParserService {
   }
 
   private findMatchingPattern(message: string, bankCode: string): SMSPattern | null {
+    console.log(`💰 SMS PARSER: Finding matching pattern for bank code: ${bankCode}`);
+    console.log(`💰 SMS PARSER: Message: ${message}`);
+    console.log(`💰 SMS PARSER: Bank code: ${bankCode}`);
+    console.log(`💰 SMS PARSER: SMS Patterns:`, this.smsPatterns);
     return this.smsPatterns.find(pattern => 
       pattern.bank === bankCode && pattern.regex.test(message)
     ) || null;

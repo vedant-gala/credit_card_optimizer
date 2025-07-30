@@ -19,8 +19,10 @@ This tool helps developers and testers simulate real-world SMS messages from var
 - **Batch Mode**: Send multiple SMS messages with configurable delays
 - **Customizable Content**: Modify amount, card type, merchant, and card details
 - **Webhook Integration**: Direct integration with backend webhook endpoints
+- **🧠 Hybrid LLM Parser Support**: Test with advanced AI-powered SMS parsing
+- **Parser Comparison**: Compare traditional webhook vs LLM parser results
 - **Packet Printing**: Detailed packet information before transmission
-- **Rich Output**: Colored console output with detailed logging
+- **Rich Output**: Colored console output with detailed logging and parsed results
 
 ## 📦 Installation
 
@@ -88,6 +90,108 @@ npm run demo-packet
 
 # View packet traversal documentation
 cat backend/docs/PACKET_TRAVERSAL_LOGGING.md
+```
+
+## 🧠 Hybrid LLM Parser Commands
+
+### Test with AI-Powered SMS Parsing
+
+The simulator now supports the new Hybrid LLM Parser that combines AI (Phi-2 LLM) with traditional regex parsing for maximum accuracy.
+
+#### Send Single SMS to Hybrid Parser
+```bash
+# Send a random SMS to hybrid parser
+npm run dev hybrid-send
+
+# Send specific bank SMS to hybrid parser
+npm run dev hybrid-send -b "HDFC Bank"
+
+# Use custom API URL
+npm run dev hybrid-send -u "http://localhost:3001/api/v1"
+```
+
+#### Send Batch SMS to Hybrid Parser
+```bash
+# Send 5 SMS to hybrid parser (default 2 second delay for LLM processing)
+npm run dev hybrid-batch
+
+# Custom count and delay
+npm run dev hybrid-batch -c 10 -d 3000
+
+# Custom API URL
+npm run dev hybrid-batch -c 5 -d 2000 -u "http://localhost:3001/api/v1"
+```
+
+#### Send Demo HDFC SMS to Hybrid Parser
+```bash
+# Test the specific HDFC format with hybrid parser
+npm run dev hybrid-hdfc-demo
+
+# With custom URL
+npm run dev hybrid-hdfc-demo -u "http://localhost:3001/api/v1"
+```
+
+#### Compare Parser Results
+```bash
+# Compare webhook vs hybrid parser for same SMS
+npm run dev compare
+
+# With specific bank
+npm run dev compare -b "HDFC Bank"
+
+# With custom URLs
+npm run dev compare -w "http://localhost:3001/api/v1/webhooks/sms" -h "http://localhost:3001/api/v1"
+```
+
+### Hybrid Parser Output Example
+```
+🧠 Sending SMS to Hybrid LLM Parser...
+URL: http://localhost:3001/api/v1/hybrid-sms/parse
+
+📦 PACKET DETAILS:
+═══════════════════════════════════════════════════════
+🔵 [abc123] 📥 OUTGOING PACKET:
+   Method: POST
+   URL: http://localhost:3001/api/v1/hybrid-sms/parse
+   Request ID: abc123
+   Timestamp: 2025-07-30T17:30:00.000Z
+   Headers: {...}
+   Body: {...}
+   Packet Size: 156 bytes
+═══════════════════════════════════════════════════════
+
+🧠 Processing with Hybrid Parser (LLM + Regex)...
+
+✅ SMS parsed successfully!
+Response: 200 OK
+
+📊 PARSED RESULTS:
+═══════════════════════════════════════════════════════
+✅ Parsing Status: SUCCESS
+🔍 Parser Used: LLM
+🎯 Confidence: 0.95
+
+💰 Transaction Details:
+   Amount: 799.00
+   Currency: INR
+   Transaction Type: debit
+   Merchant: Payu*Swiggy Food
+   Date: 2025-07-30
+   Transaction ID: N/A
+
+🏦 Bank Information:
+   Bank: HDFC Bank
+   Country: India
+   Sender IDs: HDFCBK
+
+💳 Card Information:
+   Last 4 Digits: 0088
+   Type: debit
+
+💵 Balance Information:
+   Available: N/A
+   Currency: N/A
+═══════════════════════════════════════════════════════
 ```
 
 ## 📋 SMS Patterns
